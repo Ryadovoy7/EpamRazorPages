@@ -33,9 +33,8 @@ namespace EpamRazorPages.Pages
             order.Cost = 0;
             order.Status = "Новый";
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == order.UserName);
-
             // без идентификации бессмысленно конечно. Считать плейсхолдером.
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == order.UserName);
             if (user == null)
                 order.User = new User { Name = order.UserName, ContactNumber = order.ContactNumber };
             else
