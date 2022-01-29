@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using EpamRazorPages.Model;
+using EpamRazorPages.Controllers;
 
 namespace EpamRazorPages.Pages
 {
@@ -22,43 +23,6 @@ namespace EpamRazorPages.Pages
         {
             Order = await _context.Orders
                 .Include(o => o.User).ToListAsync();
-        }
-
-        public async Task<IActionResult> OnGetDeleteAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var orderToDelete = await _context.Orders.FindAsync(id);
-
-            if (orderToDelete != null)
-            {
-                _context.Orders.Remove(orderToDelete);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Orders");
-        }
-
-        public async Task<IActionResult> OnGetCancelAsync(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var orderToCancel = await _context.Orders.FindAsync(id);
-
-            if (orderToCancel != null)
-            {
-                orderToCancel.Status = OrderStatus.Canceled;
-                _context.Update(orderToCancel);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Orders");
         }
     }
 }

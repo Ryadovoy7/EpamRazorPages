@@ -66,10 +66,18 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a asp-page-handler="Delete" asp-route-id="@item.OrderId">Удалить</a>
+                    <form method="post" action="/api/orders/cancel">
+                        <button type="submit" name="orderId" value="@item.OrderId" class="btn btn-link p-0 pb-5">
+                            Отменить
+                        </button>
+                    </form>
                 </td>
                 <td>
-                    <a asp-page-handler="Cancel" asp-route-id="@item.OrderId">Отменить заказ</a>
+                    <form method="post" action="/api/orders/delete">
+                        <button type="submit" name="orderId" value="@item.OrderId" class="btn btn-link p-0 pb-5">
+                            Удалить
+                        </button>
+                    </form>
                 </td>
             </tr>
     }

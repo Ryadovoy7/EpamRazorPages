@@ -28,6 +28,7 @@ namespace EpamRazorPages
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<TaxiContext>(options => options.UseSqlServer(connection));
             services.AddRazorPages();
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
@@ -52,6 +53,8 @@ namespace EpamRazorPages
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllerRoute("default", "api/{controller}/{action}");
+                endpoints.MapControllers();
             });
         }
     }
