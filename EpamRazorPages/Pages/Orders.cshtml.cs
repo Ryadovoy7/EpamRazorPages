@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -26,26 +24,6 @@ namespace EpamRazorPages.Pages
                 .Include(o => o.User).ToListAsync();
         }
 
-        public async Task<IActionResult> OnPostAddAsync(Order order)
-        {
-            order.CarDeliveryTime = TimeSpan.Zero;
-            order.OrderDate = DateTime.Now;
-            order.Cost = 0;
-            order.Status = "Новый";
-
-            // без идентификации бессмысленно конечно. Считать плейсхолдером.
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == order.UserName);
-            if (user == null)
-                order.User = new User { Name = order.UserName, ContactNumber = order.ContactNumber };
-            else
-                order.User = user;
-
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Orders");
-        }
-
         public async Task<IActionResult> OnGetDeleteAsync(int? id)
         {
             if (id == null)
@@ -58,6 +36,25 @@ namespace EpamRazorPages.Pages
             if (orderToDelete != null)
             {
                 _context.Orders.Remove(orderToDelete);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("./Orders");
+        }
+
+        public async Task<IActionResult> OnGetCancelAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var orderToCancel = await _context.Orders.FindAsync(id);
+
+            if (orderToCancel != null)
+            {
+                orderToCancel.Status = OrderStatus.Canceled;
+                _context.Update(orderToCancel);
                 await _context.SaveChangesAsync();
             }
 

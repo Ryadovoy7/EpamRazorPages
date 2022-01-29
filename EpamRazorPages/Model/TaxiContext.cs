@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System;
 
 namespace EpamRazorPages.Model
 {
@@ -20,9 +22,19 @@ namespace EpamRazorPages.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // конвертируем все даты в UTC
+            // https://github.com/dotnet/efcore/issues/4711#issuecomment-535288442
+            var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+            var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
+                v => v.HasValue ? v.Value.ToUniversalTime() : v,
+                v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+
             modelBuilder.Entity<User>(entity =>
             {
-                entity.ToTable("Users", "Taxi");
+                entity.ToTable("Users");
 
                 entity.HasIndex(e => e.Name, "Name");
 
@@ -38,13 +50,13 @@ namespace EpamRazorPages.Model
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.ToTable("Orders", "Taxi");
+                entity.ToTable("Orders");
 
                 entity.HasIndex(e => e.UserId, "UserID");
 
                 entity.HasIndex(e => e.UserName, "UserName");
 
-                entity.HasIndex(e => e.ContactNumber, "ContactNumber");
+                entity.Ignore(e => e.ContactNumber);
 
                 entity.HasIndex(e => e.OrderDate, "OrderDate");
 
@@ -54,11 +66,12 @@ namespace EpamRazorPages.Model
 
                 entity.Property(e => e.UserName).HasMaxLength(60);
 
-                entity.Property(e => e.ContactNumber).HasMaxLength(24);
+                entity.Property(e => e.OrderDate).HasColumnType("datetime")
+                    .HasConversion(dateTimeConverter);
 
-                entity.Property(e => e.OrderDate).HasColumnType("datetime");
-
-                entity.Property(e => e.CarDeliveryTime).HasColumnType("time");
+                entity.Property(e => e.CarDeliveryTime).HasColumnType("datetime")
+                    .IsRequired(false)
+                    .HasConversion(nullableDateTimeConverter);
 
                 entity.Property(e => e.FromLocation).HasMaxLength(200);
 
@@ -66,6 +79,9 @@ namespace EpamRazorPages.Model
 
                 entity.Property(e => e.Cost)
                     .HasColumnType("money");
+
+                entity.Property(e => e.Status)
+                        .HasColumnType("int");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)

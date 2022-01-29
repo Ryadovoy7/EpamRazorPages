@@ -1,0 +1,54 @@
+﻿@page 
+@model EpamRazorPages.Pages.CreateModel
+@{
+}
+<h3>Создать заказ</h3>
+<form method="post" asp-page-handler="Add" class="form-horizontal" role="form">
+    <p>Для оформления заказа заполните следующие поля:</p>
+    <div class="form-group">
+        <label for="UserName" class="col-md-2 control-label">ФИО:</label>
+        <div class="col-md-4">
+            <input asp-for="order.UserName" type="text" class="form-control" />
+            <span asp-validation-for="order.UserName"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ContactNumber" class="col-md-2 control-label">Телефон:</label>
+        <div class="col-md-4">
+            <input asp-for="order.ContactNumber" type="tel" class="form-control" />
+            <span asp-validation-for="order.ContactNumber"></span>
+        </div>
+    </div>
+        <div class="form-group">
+        <label for="FromLocation" class="col-md-2 control-label">Откуда:</label>
+        <div class="col-md-4">
+            <input asp-for="order.FromLocation" type="text" class="form-control" />
+            <span asp-validation-for="order.FromLocation"></span>
+        </div>
+    </div>
+        <div class="form-group">
+        <label for="ToLocation" class="col-md-2 control-label">Куда:</label>
+        <div class="col-md-4">
+            <input asp-for="order.ToLocation" type="text" pattern="+[0-9]{10}" class="form-control" />
+            <span asp-validation-for="order.ToLocation"></span>
+        </div>
+    </div>
+        <div class="form-group">
+        <label for="CarDeliveryTime" class="col-md-2 control-label">Время подачи авто:</label>
+        <div class="col-md-4">
+            <input asp-for="order.CarDeliveryTime" type="datetime-local" class="form-control" />
+            <span asp-validation-for="order.CarDeliveryTime"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Отправить" />
+        </div>
+    </div>
+</form>
+
+@section scripts{
+ 
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

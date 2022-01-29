@@ -1,103 +1,95 @@
-﻿@page
+﻿@page "/"
 @model EpamRazorPages.Pages.OrdersModel
 
 @{
     ViewData["Title"] = "Заказы";
 }
-
-<h3>Создать заказ</h3>
-
-<form method="post" asp-page-handler="Add" class="form-horizontal" role="form">
-    <p>Для оформления заказа заполните следующие поля:</p>
-    <div class="form-group">
-        <label for="UserName" class="col-md-2 control-label">ФИО:</label>
-        <div class="col-md-4">
-            <input type="text" name="UserName" class="form-control" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="ContactNumber" class="col-md-2 control-label">Телефон:</label>
-        <div class="col-md-4">
-            <input type="text" name="ContactNumber" class="form-control" />
-        </div>
-    </div>
-        <div class="form-group">
-        <label for="FromLocation" class="col-md-2 control-label">Откуда:</label>
-        <div class="col-md-4">
-            <input type="text" name="FromLocation" class="form-control" />
-        </div>
-    </div>
-        <div class="form-group">
-        <label for="ToLocation" class="col-md-2 control-label">Куда:</label>
-        <div class="col-md-4">
-            <input type="text" name="ToLocation" class="form-control" />
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Отправить" />
-        </div>
-    </div>
-</form>
-
+<p><a asp-page="Create">Добавить</a></p>
 <h1>Список заказов</h1>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width:10%">
+                    ФИО
+                </th>
+                <th style="width:10%">
+                    Номер телефона
+                </th>
+                <th style="width:10%">
+                    Дата создания заказа
+                </th>
+                <th style="width:10%">
+                    Время подачи авто
+                </th>
+                <th style="width:10%">
+                    Откуда
+                </th>
+                <th style="width:10%">
+                    Куда
+                </th>
+                <th style="width:10%">
+                    Цена
+                </th>
+                <th style="width:10%">
+                    Статус
+                </th>
+                <th style="width:10%"></th>
+                <th style="width:10%"></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model.Order) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.ContactNumber)
+                </td>
+                <td>
+                    <time>@Html.DisplayFor(modelItem => item.OrderDate)</time>
+                </td>
+                <td>
+                    <time>@Html.DisplayFor(modelItem => item.CarDeliveryTime)</time>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FromLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ToLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a asp-page-handler="Delete" asp-route-id="@item.OrderId">Удалить</a>
+                </td>
+                <td>
+                    <a asp-page-handler="Cancel" asp-route-id="@item.OrderId">Отменить заказ</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                ФИО
-            </th>
-            <th>
-                Дата создания заказа
-            </th>
-            <th>
-                Время подачи авто
-            </th>
-            <th>
-                Откуда
-            </th>
-            <th>
-                Куда
-            </th>
-            <th>
-                Стоимость
-            </th>
-            <th>
-                Статус
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Order) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CarDeliveryTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FromLocation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ToLocation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-page-handler="Delete" asp-route-id="@item.OrderId">Удалить</a>
-            </td>
-        </tr>
+@section Scripts{
+<script type="text/javascript">
+    $("time").each(function (elem) {
+        var utctimeval = $(this).html();
+        var date = new Date(utctimeval);
+        if (isNaN(date))
+        {
+            $(this).html("");
+            return;
+        }
+        var datestring = ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear() + " " +
+            ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+        $(this).html(datestring);
+})
+</script>
 }
-    </tbody>
-</table>
-

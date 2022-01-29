@@ -12,23 +12,22 @@ namespace EpamRazorPages
                 var Ivan = new User
                 {
                     Name = "Иван",
-                    ContactNumber = "123",
+                    ContactNumber = "+79990007733",
                 };
                 context.Users.Add(Ivan);
-                context.Orders.Add(
-                    new Order
-                    {
-                        UserName = "Иван",
-                        ContactNumber = "123",
-                        OrderDate = System.DateTime.Now,
-                        CarDeliveryTime = System.TimeSpan.Zero,
-                        FromLocation = "Пункт А",
-                        ToLocation = "Пункт Б",
-                        Cost = 0,
-                        Status = "Новый",                        
-                        User = Ivan
-                    }
-                );
+                var order = new Order
+                {
+                    UserName = "Иван",
+                    OrderDate = System.DateTime.Now,
+                    CarDeliveryTime = System.DateTime.Now,
+                    FromLocation = "Пункт А",
+                    ToLocation = "Пункт Б",
+                    Cost = 0,
+                    Status = 0,
+                    User = Ivan
+                };
+                context.Orders.Add(order);
+                
                 context.SaveChanges();
             }
         }
